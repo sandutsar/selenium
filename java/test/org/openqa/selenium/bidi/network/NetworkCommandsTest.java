@@ -20,10 +20,7 @@ package org.openqa.selenium.bidi.network;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.openqa.selenium.testing.Safely.safelyCall;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.*;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -59,7 +56,7 @@ class NetworkCommandsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
+  @NotYetImplemented(CHROME)
   void canAddIntercept() {
     try (Network network = new Network(driver)) {
       String intercept =
@@ -72,7 +69,7 @@ class NetworkCommandsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
+  @NotYetImplemented(CHROME)
   void canContinueRequest() throws InterruptedException {
     try (Network network = new Network(driver)) {
       String intercept =
@@ -107,7 +104,7 @@ class NetworkCommandsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
+  @NotYetImplemented(CHROME)
   void canContinueResponse() throws InterruptedException {
     try (Network network = new Network(driver)) {
       String intercept =
@@ -137,7 +134,7 @@ class NetworkCommandsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
+  @NotYetImplemented(CHROME)
   void canProvideResponse() throws InterruptedException {
     try (Network network = new Network(driver)) {
       String intercept =
@@ -167,6 +164,7 @@ class NetworkCommandsTest extends JupiterTestBase {
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(FIREFOX)
+  @NotYetImplemented(CHROME)
   // TODO: Browsers are yet to implement all parameters. Once implemented, add exhaustive tests.
   void canProvideResponseWithAllParameters() throws InterruptedException {
     try (Network network = new Network(driver)) {
@@ -202,7 +200,7 @@ class NetworkCommandsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
+  @NotYetImplemented(CHROME)
   void canRemoveIntercept() {
     try (Network network = new Network(driver)) {
       String intercept =
@@ -217,7 +215,7 @@ class NetworkCommandsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
+  @NotYetImplemented(CHROME)
   void canContinueWithAuthCredentials() {
     try (Network network = new Network(driver)) {
       network.addIntercept(new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED));
@@ -237,7 +235,7 @@ class NetworkCommandsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
+  @NotYetImplemented(CHROME)
   void canContinueWithoutAuthCredentials() {
     try (Network network = new Network(driver)) {
       network.addIntercept(new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED));
@@ -257,7 +255,7 @@ class NetworkCommandsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
+  @NotYetImplemented(CHROME)
   void canCancelAuth() {
     try (Network network = new Network(driver)) {
       network.addIntercept(new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED));
@@ -276,7 +274,7 @@ class NetworkCommandsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
+  @NotYetImplemented(CHROME)
   void canFailRequest() {
     try (Network network = new Network(driver)) {
       network.addIntercept(new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT));

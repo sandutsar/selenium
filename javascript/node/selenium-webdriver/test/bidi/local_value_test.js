@@ -17,8 +17,7 @@
 
 'use strict'
 
-const assert = require('assert')
-const firefox = require('../../firefox')
+const assert = require('node:assert')
 const { Browser } = require('../../')
 const { suite } = require('../../lib/test')
 
@@ -33,7 +32,7 @@ suite(
     let driver
 
     beforeEach(async function () {
-      driver = await env.builder().setFirefoxOptions(new firefox.Options().enableBidi()).build()
+      driver = await env.builder().build()
     })
 
     afterEach(async function () {
@@ -418,5 +417,5 @@ suite(
       })
     })
   },
-  { browsers: [Browser.FIREFOX] },
+  { browsers: [Browser.FIREFOX, Browser.CHROME, Browser.EDGE] },
 )

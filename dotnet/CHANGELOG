@@ -1,3 +1,26 @@
+v4.20.0
+======
+
+* Add CDP for Chrome 124 and remove 121
+* Use correct devtools session id after reinitialization (#13768)
+* Making Selenium Manager a thin wrapper (#13833)
+  * This change has been made to make it easier to maintain and improve, the interface has
+  changed and if users were invoking it, they might experience issues. Selenium Manager is
+  still in beta and these type of changes are expected.
+* Nightly dotnet builds are now pushed to GitHub packages
+
+v4.19.0
+======
+
+* Add CDP for Chrome 123 and remove 120
+* Correct `ChromiumDriverService.AllowedIPAddresses` property name (#13626)
+* Fixed parsing of the year in ConsoleApiCalledEventArgs cdp event args (Fixes #13654)
+* Add dispose on constructor failure to ensure driver closes (#13673)
+* Rename assembly prerequisites to AssemblyFixture
+* Support setting timeouts in capabilities (#13698)
+* Treat unsuccessful http responses as errored commands (#13608)
+* Enable internal logging at trace level for unit tests (#13727)
+
 v4.18.1
 ======
 

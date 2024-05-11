@@ -53,7 +53,7 @@ public class Network implements AutoCloseable {
       new Event<>("network.responseStarted", ResponseDetails::fromJsonMap);
 
   private final Event<ResponseDetails> responseCompleted =
-      new Event<>("network.responseStarted", ResponseDetails::fromJsonMap);
+      new Event<>("network.responseCompleted", ResponseDetails::fromJsonMap);
 
   private final Event<ResponseDetails> authRequired =
       new Event<>("network.authRequired", ResponseDetails::fromJsonMap);
@@ -165,7 +165,7 @@ public class Network implements AutoCloseable {
     if (browsingContextIds.isEmpty()) {
       this.bidi.addListener(responseCompleted, consumer);
     } else {
-      this.bidi.addListener(browsingContextIds, responseStarted, consumer);
+      this.bidi.addListener(browsingContextIds, responseCompleted, consumer);
     }
   }
 

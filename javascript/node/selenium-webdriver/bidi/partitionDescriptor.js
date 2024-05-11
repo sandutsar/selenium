@@ -15,19 +15,37 @@
 // specific language governing permissions and limitations
 // under the License.
 
+/**
+ * Represents the types of partition descriptors.
+ * @enum {string}
+ * Described in https://w3c.github.io/webdriver-bidi/#command-storage-getCookies.
+ */
 const Type = {
   CONTEXT: 'context',
   STORAGE_KEY: 'storageKey',
 }
 
+/**
+ * Represents a partition descriptor.
+ * Described in https://w3c.github.io/webdriver-bidi/#command-storage-getCookies.
+ */
 class PartitionDescriptor {
+  /*eslint no-unused-private-class-members: "off"*/
   #type
 
+  /**
+   * Constructs a new PartitionDescriptor instance.
+   * @param {Type} type - The type of the partition.
+   */
   constructor(type) {
     this.#type = type
   }
 }
 
+/**
+ * Represents a partition descriptor for a browsing context.
+ * @extends PartitionDescriptor
+ */
 class BrowsingContextPartitionDescriptor extends PartitionDescriptor {
   #context = null
 
@@ -44,6 +62,10 @@ class BrowsingContextPartitionDescriptor extends PartitionDescriptor {
   }
 }
 
+/**
+ * Represents a partition descriptor for storage key.
+ * @extends PartitionDescriptor
+ */
 class StorageKeyPartitionDescriptor extends PartitionDescriptor {
   #map = new Map()
 
@@ -51,11 +73,22 @@ class StorageKeyPartitionDescriptor extends PartitionDescriptor {
     super(Type.STORAGE_KEY)
   }
 
+  /**
+   * Sets the user context for the partition descriptor.
+   * @param {any} userContext - The user context to set.
+   * @returns {PartitionDescriptor} - The updated partition descriptor instance for chaining.
+   */
   userContext(userContext) {
     this.#map.set('userContext', userContext)
     return this
   }
 
+  /**
+   * Sets the source origin for the partition descriptor.
+   *
+   * @param {string} sourceOrigin - The source origin to set.
+   * @returns {PartitionDescriptor} - The updated PartitionDescriptor instance for chaining.
+   */
   sourceOrigin(sourceOrigin) {
     this.#map.set('sourceOrigin', sourceOrigin)
     return this

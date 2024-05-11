@@ -17,19 +17,22 @@
 
 'use strict'
 
-const assert = require('assert')
-const firefox = require('../../firefox')
+const assert = require('node:assert')
 const { Browser, By } = require('../../')
-const { Pages, suite } = require('../../lib/test')
+const { Pages, suite, ignore } = require('../../lib/test')
 const BrowsingContext = require('../../bidi/browsingContext')
 const until = require('../../lib/until')
+const { Origin, CaptureScreenshotParameters } = require('../../bidi/captureScreenshotParameters')
+const { BoxClipRectangle, ElementClipRectangle } = require('../../bidi/clipRectangle')
+const { CreateContextParameters } = require('../../bidi/createContextParameters')
+const BrowserBiDi = require('../../bidi/browser')
 
 suite(
   function (env) {
     let driver
 
     beforeEach(async function () {
-      driver = await env.builder().setFirefoxOptions(new firefox.Options().enableBidi()).build()
+      driver = await env.builder().build()
     })
 
     afterEach(async function () {
@@ -60,9 +63,23 @@ suite(
       it('can create a window with a reference context', async function () {
         const browsingContext = await BrowsingContext(driver, {
           type: 'window',
-          referenceContext: await driver.getWindowHandle(),
+          createParameters: new CreateContextParameters().referenceContext(await driver.getWindowHandle()),
         })
         assert.notEqual(browsingContext.id, null)
+      })
+
+      it('can create a tab with all parameters', async function () {
+        const browser = await BrowserBiDi(driver)
+        const userContext = await browser.createUserContext()
+        const browsingContext = await BrowsingContext(driver, {
+          type: 'window',
+          createParameters: new CreateContextParameters()
+            .referenceContext(await driver.getWindowHandle())
+            .background(true)
+            .userContext(userContext),
+        })
+        assert.notEqual(browsingContext.id, null)
+        assert.notEqual(browsingContext.id, await driver.getWindowHandle())
       })
 
       it('can create a tab', async function () {
@@ -75,7 +92,7 @@ suite(
       it('can create a tab with a reference context', async function () {
         const browsingContext = await BrowsingContext(driver, {
           type: 'tab',
-          referenceContext: await driver.getWindowHandle(),
+          referenceContext: new CreateContextParameters().referenceContext(await driver.getWindowHandle()),
         })
         assert.notEqual(browsingContext.id, null)
       })
@@ -190,6 +207,40 @@ suite(
         assert.equal(base64code, pngMagicNumber)
       })
 
+      it('can take screenshot with all parameters for box screenshot', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        let captureScreenshotParams = new CaptureScreenshotParameters()
+        captureScreenshotParams.origin(Origin.VIEWPORT).clipRectangle(new BoxClipRectangle(5, 5, 10, 10))
+
+        const response = await browsingContext.captureScreenshot(captureScreenshotParams)
+
+        const base64code = response.slice(startIndex, endIndex)
+        assert.equal(base64code, pngMagicNumber)
+      })
+
+      it('can take screenshot with all parameters for element screenshot', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await driver.get(Pages.formPage)
+        const element = await driver.findElement(By.id('checky'))
+        const elementId = await element.getId()
+
+        let captureScreenshotParams = new CaptureScreenshotParameters()
+        captureScreenshotParams.origin(Origin.VIEWPORT).clipRectangle(new ElementClipRectangle(elementId))
+
+        const response = await browsingContext.captureScreenshot(captureScreenshotParams)
+
+        const base64code = response.slice(startIndex, endIndex)
+        assert.equal(base64code, pngMagicNumber)
+      })
+
       it('can take box screenshot', async function () {
         const id = await driver.getWindowHandle()
         const browsingContext = await BrowsingContext(driver, {
@@ -212,21 +263,6 @@ suite(
         const element = await driver.findElement(By.id('checky'))
         const elementId = await element.getId()
         const response = await browsingContext.captureElementScreenshot(elementId)
-
-        const base64code = response.slice(startIndex, endIndex)
-        assert.equal(base64code, pngMagicNumber)
-      })
-
-      it('can scroll and take element screenshot', async function () {
-        const id = await driver.getWindowHandle()
-        const browsingContext = await BrowsingContext(driver, {
-          browsingContextId: id,
-        })
-
-        await driver.get(Pages.formPage)
-        const element = await driver.findElement(By.id('checkbox-with-label'))
-        const elementId = await element.getId()
-        const response = await browsingContext.captureElementScreenshot(elementId, undefined, true)
 
         const base64code = response.slice(startIndex, endIndex)
         assert.equal(base64code, pngMagicNumber)
@@ -382,7 +418,7 @@ suite(
         assert(result.url.includes('/bidi/logEntryAdded.html'))
       })
 
-      xit('can reload with readiness state', async function () {
+      it('can reload with readiness state', async function () {
         const id = await driver.getWindowHandle()
         const browsingContext = await BrowsingContext(driver, {
           browsingContextId: id,
@@ -410,7 +446,7 @@ suite(
         assert.equal(result[1], 300)
       })
 
-      xit('can set viewport with device pixel ratio', async function () {
+      ignore(env.browsers(Browser.FIREFOX)).it('can set viewport with device pixel ratio', async function () {
         const id = await driver.getWindowHandle()
         const browsingContext = await BrowsingContext(driver, {
           browsingContextId: id,
@@ -427,7 +463,19 @@ suite(
         const devicePixelRatio = await driver.executeScript('return window.devicePixelRatio;')
         assert.equal(devicePixelRatio, 5)
       })
+
+      it('Get All Top level browsing contexts', async () => {
+        const id = await driver.getWindowHandle()
+        const window1 = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await BrowsingContext(driver, { type: 'window' })
+
+        const res = await window1.getTopLevelContexts()
+        assert.equal(res.length, 2)
+      })
     })
   },
-  { browsers: [Browser.FIREFOX] },
+  { browsers: [Browser.FIREFOX, Browser.CHROME, Browser.EDGE] },
 )
